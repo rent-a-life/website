@@ -1,0 +1,13 @@
+body {
+  /* Links to the image inside your images folder */
+  background-image: url('Screenshot 2025-09-10 200843.png'); 
+  
+  /* Prevents the image from repeating like a grid */
+  background-repeat: no-repeat; 
+  
+  /* Centers the image horizontally and vertically */
+  background-position: center; 
+  
+  /* Forces the image to scale nicely and cover the whole screen */
+  background-size: cover; 
+}
