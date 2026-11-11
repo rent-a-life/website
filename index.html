@@ -6,9 +6,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rental</title>
   <style>
-    :root {
-      --background-image: url('Screenshot 2025-09-10 200843.png');
-      --background-color: #101010; 
+  :root {
+    --background-image: url('Screenshot 2025-09-10 200843.png');
+    --background-color: #101010;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-color: var(--background-color);
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Back layer: blurred copy that fills the whole screen */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: var(--background-image) center / cover no-repeat;
+      filter: blur(25px) brightness(0.8);
+      transform: scale(1.1);
+      z-index: -2;
+    }
+
+    /* Front layer: the full image, never cropped */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: var(--background-image) center / contain no-repeat;
+      z-index: -1;
     }
 
     body {
