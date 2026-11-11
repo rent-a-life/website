@@ -70,8 +70,8 @@ img { display: block; max-width: 100%; }
 .btn-primary:hover { background: var(--accent-hover); }
 .btn-secondary { background: var(--surface); color: var(--ink); border-color: var(--line-strong); }
 .btn-secondary:hover { background: var(--bg); }
-.btn-ghost { background: var(--bg);; color: var(--ink); }
-.btn-ghost:hover { background: #e3e8ecb0; }
+.btn-ghost { background: #edeff1c7;; color: var(--ink); }
+.btn-ghost:hover { background: #0483eb3f; }
 .btn-danger { background: var(--surface); color: var(--danger); border-color: #e0bcb7; }
 .btn-danger:hover { background: #fbf0ee; }
 .btn-block { width: 100%; height: 46px; }
