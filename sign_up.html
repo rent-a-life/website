@@ -2,95 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up Page</title>
-  <style>
-    body {
-      background: #1e1e1e;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .signup-container {
-      background-color: #2e2e2e;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.2);
-      text-align: center;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 15px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    button {
-      padding: 12px 25px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      background-color: #00aaff;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0088cc;
-    }
-
-    .message {
-      color: #44ff88;
-      margin-top: 10px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create account | Rentables</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192-v2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="rentables.css" />
 </head>
 <body>
-
-  <div class="signup-container">
-    <h2>Sign Up</h2>
-    <form onsubmit="return handleSignup()">
-      <input type="text" id="name" placeholder="Your name" required />
-      <input type="email" id="email" placeholder="Your email" required />
-      <input type="password" id="password" placeholder="Your password" required />
-      <button type="submit">Create Account</button>
-      <div class="message" id="signupMessage"></div>
-    </form>
-  </div>
+  <header class="nav"><a class="brand" href="index.html"><img src="icon-192-v2.png" alt="" /><span>Rentables</span></a></header>
+  <main class="auth-wrap">
+    <section class="auth-card">
+      <h1>Create your account</h1>
+      <p class="sub">Start renting or listing items in a minute.</p>
+      <form onsubmit="return handleSignup()">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" autocomplete="new-password" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+        <div class="message" id="signupMessage" role="status"></div>
+      </form>
+      <p class="auth-foot">Already have an account? <a href="sign_in2.html">Log in</a></p>
+    </section>
+  </main>
 
   <script>
     function handleSignup() {
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const message = document.getElementById("signupMessage");
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("signupMessage");
 
-  
-  if (name && email && password) {
-    localStorage.setItem("userName", name);
-    localStorage.setItem("userEmail", email);
-    localStorage.setItem("userPassword", password);
-    message.textContent = "Account created successfully!";
-    localStorage.setItem("userBalance", "50");
-    setTimeout(() => {
-      window.location.href = "front2.html";
-    }, 1000);
-    return false;
-  }
-  return false;
-}
+      if (name && email && password) {
+        localStorage.setItem("userName", name);
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userPassword", password);
+        message.textContent = "Account created. Taking you to the marketplace.";
+        localStorage.setItem("userBalance", "50");
+        setTimeout(() => {
+          window.location.href = "front2.html";
+        }, 1000);
+        return false;
+      }
+      return false;
+    }
   </script>
 </body>
 </html>

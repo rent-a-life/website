@@ -2,74 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Page</title>
-  <style>
-    body {
-      background: #1e1e1e;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .login-container {
-      background-color: #2e2e2e;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.2);
-      text-align: center;
-    }
-
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 15px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    button {
-      padding: 12px 25px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      background-color: #00aaff;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0088cc;
-    }
-
-    .error {
-      color: #ff4444;
-      margin-top: 10px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log in | Rentables</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192-v2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="rentables.css" />
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login</h2>
-    <form onsubmit="return validateLogin()">
-      <input type="email" id="email" placeholder="Enter your email" required />
-      <input type="password" id="password" placeholder="Enter your password" required />
-      <button type="submit">Log In</button>
-      <div id="error" class="error"></div>
-      <p style="margin-top: 20px; text-align: center;">
-    Don't have an account?
-    <a href="sign_up.html" style="color: #00aaff; text-decoration: underline;">
-        Click here to sign up
-    </a>
-</p>
-
-    </form>
-  </div>
+  <header class="nav"><a class="brand" href="index.html"><img src="icon-192-v2.png" alt="" /><span>Rentables</span></a></header>
+  <main class="auth-wrap">
+    <section class="auth-card">
+      <h1>Log in</h1>
+      <p class="sub">Enter your details to access your account.</p>
+      <form onsubmit="return validateLogin()">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+        <div id="error" class="error" role="alert"></div>
+      </form>
+      <p class="auth-foot">New to Rentables? <a href="sign_up.html">Create an account</a></p>
+    </section>
+  </main>
 
   <script>
     function validateLogin() {
@@ -81,7 +43,6 @@
       const correctEmail = localStorage.getItem("userEmail");
       const correct2Email = "maangarg@gmail.com";
       const correct2Password = "44445678";
-      
 
       if (email === correctEmail && password === correctPassword) {
         errorDiv.textContent = "";
@@ -92,7 +53,7 @@
         window.location.href = 'front.html';
         return false;
       } else {
-        errorDiv.textContent = "Invalid credentials. Please try again.";
+        errorDiv.textContent = "Email or password is incorrect. Check your details and try again.";
         return false;
       }
     }

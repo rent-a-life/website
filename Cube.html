@@ -5,134 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rent Cube</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" />
-  <style>
-    body {
-      background: #1e1e1e;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      padding: 40px;
-      margin: 0;
-    }
-
-    .back-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background-color: #00aaff;
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 20px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      transition: background-color 0.3s;
-    }
-    .back-btn:hover {
-      background-color: #0088cc;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: #2e2e2e;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.2);
-    }
-   
-    #userBalanceBox {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #ffffff;
-      color: #333;
-      font-weight: bold;
-      font-family: sans-serif;
-      font-size: 14px;
-      padding: 10px 16px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-    }
-
-
-    .container img {
-      width: 100%;
-      border-radius: 10px;
-    }
-
-    h1 {
-      margin-top: 20px;
-      font-size: 2rem;
-      text-align: center;
-    }
-
-    label {
-      display: block;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-
-    #datepicker {
-      width: 100%;
-      padding: 12px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: none;
-      background: #3e3e3e;
-      color: #fff;
-    }
-
-    .output {
-      margin-top: 15px;
-      text-align: center;
-      font-size: 1.2rem;
-      color: #00ffcc;
-    }
-
-    button {
-      display: block;
-      margin: 30px auto 0;
-      padding: 12px 25px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      background-color: #00aaff;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #0088cc;
-    }
-
-    .litepicker .is-in-range {
-      background-color: #cceeff !important;
-    }
-  </style>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192-v2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="rentables.css" />
 </head>
 <body>
-    <button onclick="goBack()" class="back-btn">← Back to Marketplace</button>
+    <header class="nav">
+    <button onclick="goBack()" class="btn btn-ghost">Back to marketplace</button>
+    <span class="nav-spacer"></span>
+    <div id="userBalanceBox" class="balance">Balance <span id="userBalance"></span></div>
+  </header>
+  <script>function goBack() { window.history.back(); }</script>
 
-    <script>
-    
-    function goBack() {
-        window.history.back();
-    }</script>
-
-  <div class="container">
-    <img src="https://media.printables.com/media/prints/935893/images/7153672_2cc8edc1-6bea-4bec-94db-869e38aee98c_9b57978c-5952-471f-b150-2ec7d51c17a1/thumbs/inside/1280x960/jpeg/img_0244.webp" alt="Cube for Rent" />
-    <h1>Cube for Rent</h1>
-
-    <label for="datepicker">Select Rental Dates:</label>
-    <input type="text" id="datepicker" placeholder="Choose your range" readonly />
-
-    <div class="output" id="summary">Select dates to calculate cost</div>
-
-    <button onclick="submitRental()">Rent This Cube</button>
-  </div>
+  <main class="container detail">
+    <div class="detail-media"><img src="https://media.printables.com/media/prints/935893/images/7153672_2cc8edc1-6bea-4bec-94db-869e38aee98c_9b57978c-5952-471f-b150-2ec7d51c17a1/thumbs/inside/1280x960/jpeg/img_0244.webp" alt="Cube" /></div>
+    <div class="detail-panel">
+      <h1>Cube</h1>
+      <p class="price"><strong>$5</strong> per day</p>
+      <p class="detail-desc">This is a 3d printed gear cube. It will provide you with copious amounts of fun and is a great rent. Do try not to break it. And do not leave it near 63 Dareen Street.</p>
+      <label for="datepicker">Rental dates</label>
+      <input type="text" id="datepicker" placeholder="Choose start and end date" readonly />
+      <div class="output" id="summary">Select dates to calculate cost</div>
+      <button onclick="submitRental()" class="btn btn-primary btn-block">Rent now</button>
+    </div>
+  </main>
 
 
   <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js"></script>
@@ -203,9 +102,7 @@
     }
 
   </script>
-  <div id="userBalanceBox">
-    Balance: <span id="userBalance"></span>
-  </div>
+  
 
   <script>
     const balance = localStorage.getItem("userBalance");

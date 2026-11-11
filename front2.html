@@ -2,190 +2,114 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rentables</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #111;
-      color: white;
-    }
-
-    header {
-      top: 0;
-      z-index: 100;
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      padding: 10px 20px;
-      text-align: center;
-      font-size: 2.5rem;
-    }
-
-    .profile-button {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background-color: #00aaff;
-      border-radius: 20px;
-      padding: 7.5px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1rem;
-    }
-
-    .search-bar-container {
-      margin: 20px auto;
-      text-align: center;
-    }
-
-    #searchInput {
-      padding: 10px;
-      border-radius: 8px;
-      width: 220px;
-      font-size: 1rem;
-    }
-
-    .card-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 40px 20px;
-      justify-items: center;
-    }
-
-    .listing-card {
-      width: 100%;
-      max-width: 300px;
-      background-color: #1f1f1f;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      transition: transform 0.3s ease;
-    }
-
-    .listing-card:hover {
-      transform: scale(1.03);
-    }
-
-    .listing-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
-    }
-
-    .listing-card h2 {
-      font-size: 1.4rem;
-      margin: 10px 0 5px;
-    }
-
-    .listing-card p {
-      font-size: 0.95rem;
-      color: #ccc;
-      padding: 0 10px 15px;
-    }
-
-    .card-link {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      height: 100%;
-      width: 100%;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketplace | Rentables</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192-v2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="rentables.css" />
 </head>
 <body>
+  <header class="nav">
+    <a class="brand" href="front2.html"><img src="icon-192-v2.png" alt="" /><span>Rentables</span></a>
+    <div class="nav-search">
+      <input id="searchInput" type="search" placeholder="Search listings" aria-label="Search listings" />
+    </div>
+    <span class="nav-spacer"></span>
+    <div class="balance" id="userBalanceBox" hidden>Balance <span id="userBalance"></span></div>
+    <a class="btn btn-secondary" href="profile2.html">Profile</a>
+  </header>
 
-  <a href="profile2.html" class="profile-button">👤</a>
-  <header>🛒 Rentables</header>
-
-  <div class="search-bar-container">
-    <input id="searchInput" type="text" placeholder="Search listings...">
-  </div>
-
-  <div class="card-container" id="cardContainer"></div>
+  <main class="container">
+    <div class="page-head">
+      <h1>Browse listings</h1>
+      <p id="resultCount"></p>
+    </div>
+    <div class="grid" id="cardContainer"></div>
+    <p class="empty" id="emptyState" hidden>No listings match your search. Try a different word.</p>
+  </main>
 
   <script>
     const cardContainer = document.getElementById("cardContainer");
 
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
 
     const curatedListings = [
       {
-        href: "snake.html",
+        href: "snake.html", rate: 15, title: "Snake",
         img: "https://www.rainforesttrust.org/app/uploads/2024/07/Cobra-by-Skynavin-1920x1300-shutterstock_688611442-aspect-ratio-1000-715.webp",
-        title: "Snake",
         desc: "Trained to kill if not returned on time. It is a beautiful snake that is very long and can perform many tasks, such as just being there."
       },
       {
-        href: "tank.html",
+        href: "tank.html", rate: 10, title: "Dragon",
         img: "https://media.licdn.com/dms/image/v2/C4D12AQFSI3q3iVULXQ/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1559132379526?e=2147483647&v=beta&t=dQl1vg89PutvWl9T0jDpTTwopid_yY6ZlzsJR_BIPrI",
-        title: "Dragon",
         desc: "It is a dragon with no wings (I know, sad) it cannot fly you around. It is NOT trained but can be a great pet for a day or two. Be careful, he likes meat. Doesn't need much mantaining."
       },
       {
-        href: "PS5.html",
+        href: "PS5.html", rate: 30, title: "PS5",
         img: "https://www.3brothersmobiles.com.au/cdn/shop/products/143354-games-feature-sony-playstation-5-release-date-rumours-and-everything-you-need-to-know-about-ps5-image1-cvz3adase9_1200x1200.jpg?v=1605486950",
-        title: "PS5",
         desc: "Gaming console for playing games or something, IDK. Each day is counted as one game. You can bring a friend along with you as it is a two player game, or you could vs me."
-      }, 
+      },
       {
-        href: "Cube.html",
+        href: "Cube.html", rate: 5, title: "Cube",
         img: "https://media.printables.com/media/prints/935893/images/7153672_2cc8edc1-6bea-4bec-94db-869e38aee98c_9b57978c-5952-471f-b150-2ec7d51c17a1/thumbs/inside/1280x960/jpeg/img_0244.webp",
-        title: "Cube",
         desc: "This is a 3d printed gear cube. It will provide you with copious amounts of fun and is a great rent. Do try not to break it. And do not leave it near 63 Dareen Street"
       },
       {
-        href: "guitar.html",
+        href: "guitar.html", rate: 15, title: "Electric Guitar",
         img: "https://www.colemansmusic.com.au/cdn/shop/products/VES57B-front.jpg?v=1646903616",
-        title: "Electric Guitar",
         desc: "It is a great guitar and works really well. Have a turn and play some MUSIC!!!"
       }
-
     ];
 
-    curatedListings.forEach(listing => {
-      const card = document.createElement("div");
-      card.className = "listing-card";
-      card.innerHTML = `
-        <a href="${listing.href}" class="card-link">
-          <img src="${listing.img}" alt="${listing.title}" />
-          <h2>${listing.title}</h2>
-          <p>${listing.desc}</p>
-        </a>
-      `;
-      cardContainer.appendChild(card);
-    });
-    const userListings = JSON.parse(localStorage.getItem("userListings") || "[]");
+    const userListings = JSON.parse(localStorage.getItem("userListings") || "[]")
+      .filter(l => !l.hiddenInProfile)
+      .map(l => ({ href: "listing.html?id=" + l.id, rate: l.rate, title: l.title, img: l.image, desc: l.description }));
 
-    userListings.forEach(listing => {
-      const card = document.createElement("div");
-      card.className = "listing-card";
+    [...curatedListings, ...userListings].forEach(l => {
+      const card = document.createElement("a");
+      card.className = "card";
+      card.href = l.href;
       card.innerHTML = `
-        <a href="listing.html?id=${listing.id}" class="card-link">
-          <img src="${listing.image}" alt="${listing.title}" />
-          <h2>${listing.title}</h2>
-          <p>${listing.description}</p>
-        </a>
-      `;
+        <img src="${esc(l.img)}" alt="" loading="lazy" />
+        <div class="card-body">
+          <h3>${esc(l.title)}</h3>
+          <p class="card-desc">${esc(l.desc)}</p>
+          <p class="price"><strong>${l.rate ? "$" + esc(l.rate) : ""}</strong> ${l.rate ? "per day" : ""}</p>
+        </div>`;
       cardContainer.appendChild(card);
     });
 
-    document.getElementById('searchInput').addEventListener('input', function() {
-      const query = this.value.toLowerCase();
-      document.querySelectorAll('.listing-card').forEach(card => {
-        const text = card.textContent.toLowerCase();
-        card.style.display = text.includes(query) ? '' : 'none';
+    const cards = document.querySelectorAll(".card");
+    const count = document.getElementById("resultCount");
+    const empty = document.getElementById("emptyState");
+
+    function updateCount(n) {
+      count.textContent = n + (n === 1 ? " item" : " items") + " available to rent";
+      empty.hidden = n !== 0;
+    }
+    updateCount(cards.length);
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const query = this.value.trim().toLowerCase();
+      let shown = 0;
+      cards.forEach(card => {
+        const match = card.textContent.toLowerCase().includes(query);
+        card.style.display = match ? "" : "none";
+        if (match) shown++;
       });
+      updateCount(shown);
     });
-  </script>
 
+    const balance = localStorage.getItem("userBalance");
+    if (balance) {
+      document.getElementById("userBalance").textContent = "$" + balance;
+      document.getElementById("userBalanceBox").hidden = false;
+    }
+  </script>
 </body>
 </html>

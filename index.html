@@ -1,115 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="manifest.json">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rental</title>
+  <title>Rentables</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192-v2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="rentables.css" />
   <style>
-  :root {
-    --background-image: url('Screenshot 2025-09-10 200843.png');
-    --background-color: #101010;
+    html, body { height: 100%; }
+    body { display: flex; flex-direction: column; overflow: hidden; }
+    .hero { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #2b7a9b; }
+    /* Blurred copy fills any space the full image does not cover */
+    .hero::before, .hero::after {
+      content: ""; position: absolute; inset: 0;
+      background: url('background.png') center / cover no-repeat;
     }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      min-height: 100dvh;
-      background-color: var(--background-color);
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
-    }
-
-    /* Back layer: blurred copy that fills the whole screen */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: var(--background-image) center / cover no-repeat;
-      filter: blur(25px) brightness(0.8);
-      transform: scale(1.1);
-      z-index: -2;
-    }
-
-    /* Front layer: the full image, never cropped */
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: var(--background-image) center / contain no-repeat;
-      z-index: -1;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--background-color) var(--background-image) no-repeat center center;
-      background-size: cover;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    .top-left-buttons {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      gap: 15px;
-      z-index: 10;
-    }
-
-    .top-left-buttons button {
-      padding: 10px 22px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      background: transparent;
-      color: #fff;
-      cursor: pointer;
-      border: 1px solid #fff;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .top-left-buttons button:hover {
-      background: #fff;
-      color: #101010;
-    }
-
-    @keyframes rainbow {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-
-    button {
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 8px;
-      background-color: #ffffffcc;
-      color: #333;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #fff;
-      box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.7);
-    }
+    .hero::before { filter: blur(24px); transform: scale(1.1); }
+    /* Full image, never cropped */
+    .hero::after { background-size: contain; }
   </style>
 </head>
 <body>
-  <div class="top-left-buttons">
-    <a href="sign_up.html" style="text-decoration:none;">
-      <button>Register Now</button>
-    </a>
-    <a href="sign_in2.html" style="text-decoration:none;">
-      <button>Login</button>
-    </a>
-  </div>
+  <header class="nav">
+    <a class="brand" href="index.html"><img src="icon-192-v2.png" alt="" /><span>Rentables</span></a>
+    <span class="nav-spacer"></span>
+    <a class="btn btn-ghost" href="sign_in2.html">Log in</a>
+    <a class="btn btn-primary" href="sign_up.html">Create account</a>
+  </header>
+  <main class="hero" role="img" aria-label="Rent anything from anyone. Access thousands of items, safely and for sustainable living."></main>
 </body>
 </html>
