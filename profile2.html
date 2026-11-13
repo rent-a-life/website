@@ -70,11 +70,119 @@
   </script>
 
   <script>
+    // Photo cropper: drag to move, slider to zoom
+    let crop = null;
+    let drag = null;
+    const FRAME_BG = "#f2f5f7";
+
+    function loadImage(input) {
+      const file = input.files[0];
+      const box = document.getElementById("cropper");
+      if (crop && crop.url) URL.revokeObjectURL(crop.url);
+      crop = null;
+      box.hidden = true;
+      if (!file) return;
+
+      const url = URL.createObjectURL(file);
+      const img = document.getElementById("cropImg");
+      img.onload = () => {
+        box.hidden = false;
+        const frame = document.getElementById("cropFrame");
+        const fw = frame.clientWidth, fh = frame.clientHeight;
+        const natW = img.naturalWidth, natH = img.naturalHeight;
+        const cover = Math.max(fw / natW, fh / natH);
+        const contain = Math.min(fw / natW, fh / natH);
+        crop = {
+          img, url, natW, natH,
+          min: contain, max: cover * 3, scale: cover,
+          x: (fw - natW * cover) / 2, y: (fh - natH * cover) / 2
+        };
+        document.getElementById("cropZoom").value = ((cover - contain) / (cover * 3 - contain)) * 100;
+        applyCrop();
+      };
+      img.onerror = () => {
+        alert("That file could not be used as an image. Try a JPG or PNG.");
+        input.value = "";
+      };
+      img.src = url;
+    }
+
+    function applyCrop() {
+      const frame = document.getElementById("cropFrame");
+      const fw = frame.clientWidth, fh = frame.clientHeight;
+      const w = crop.natW * crop.scale, h = crop.natH * crop.scale;
+      // Keep the photo from being dragged out of the frame
+      crop.x = w >= fw ? Math.min(0, Math.max(fw - w, crop.x)) : Math.min(fw - w, Math.max(0, crop.x));
+      crop.y = h >= fh ? Math.min(0, Math.max(fh - h, crop.y)) : Math.min(fh - h, Math.max(0, crop.y));
+      Object.assign(crop.img.style, { width: w + "px", height: h + "px", left: crop.x + "px", top: crop.y + "px" });
+    }
+
+    function onCropZoom(value) {
+      if (!crop) return;
+      const frame = document.getElementById("cropFrame");
+      const cx = frame.clientWidth / 2, cy = frame.clientHeight / 2;
+      const px = (cx - crop.x) / crop.scale, py = (cy - crop.y) / crop.scale;
+      crop.scale = crop.min + (crop.max - crop.min) * (value / 100);
+      crop.x = cx - px * crop.scale;
+      crop.y = cy - py * crop.scale;
+      applyCrop();
+    }
+
+    function cropDown(e) {
+      if (!crop) return;
+      drag = { px: e.clientX, py: e.clientY, x: crop.x, y: crop.y };
+      e.currentTarget.setPointerCapture(e.pointerId);
+      e.currentTarget.classList.add("dragging");
+    }
+    function cropMove(e) {
+      if (!drag) return;
+      crop.x = drag.x + e.clientX - drag.px;
+      crop.y = drag.y + e.clientY - drag.py;
+      applyCrop();
+    }
+    function cropUp(e) {
+      drag = null;
+      e.currentTarget.classList.remove("dragging");
+    }
+    function cropWheel(e) {
+      if (!crop) return;
+      e.preventDefault();
+      const zoom = document.getElementById("cropZoom");
+      zoom.value = Math.min(100, Math.max(0, +zoom.value - e.deltaY / 10));
+      onCropZoom(zoom.value);
+    }
+
+    // Draw exactly what the frame shows into a 4:3 image
+    function getCroppedImage() {
+      if (!crop) return "";
+      const fw = document.getElementById("cropFrame").clientWidth;
+      const outW = 900, outH = 675, r = outW / fw;
+      const canvas = document.createElement("canvas");
+      canvas.width = outW;
+      canvas.height = outH;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = FRAME_BG;
+      ctx.fillRect(0, 0, outW, outH);
+      ctx.drawImage(crop.img, crop.x * r, crop.y * r, crop.natW * crop.scale * r, crop.natH * crop.scale * r);
+      return canvas.toDataURL("image/jpeg", 0.82);
+    }
+
     function openListingForm() {
+      crop = null;
       document.getElementById("listingFormContainer").innerHTML = `
         <div class="form-card">
           <div class="field"><label for="listingTitle">Title</label><input id="listingTitle" type="text" /></div>
-          <div class="field"><label for="listingImage">Image URL</label><input id="listingImage" type="text" placeholder="https://" /></div>
+          <div class="field">
+            <label for="listingImage">Photo</label>
+            <input id="listingImage" type="file" accept="image/*" onchange="loadImage(this)" />
+            <div id="cropper" class="cropper" hidden>
+              <div class="crop-frame" id="cropFrame" onpointerdown="cropDown(event)" onpointermove="cropMove(event)" onpointerup="cropUp(event)" onpointercancel="cropUp(event)" onwheel="cropWheel(event)">
+                <img id="cropImg" alt="" draggable="false" />
+              </div>
+              <div class="crop-zoom"><label for="cropZoom">Zoom</label><input id="cropZoom" type="range" min="0" max="100" value="0" oninput="onCropZoom(this.value)" /></div>
+              <p class="muted crop-hint">Drag the photo to move it. This frame matches how it shows on the site.</p>
+            </div>
+          </div>
           <div class="field"><label for="listingDescription">Description</label><textarea id="listingDescription"></textarea></div>
           <div class="field"><label for="listingRate">Rate per day ($)</label><input id="listingRate" type="number" min="1" /></div>
           <div class="row">
@@ -87,12 +195,12 @@
 
     function saveListing() {
       const title = document.getElementById("listingTitle").value;
-      const image = document.getElementById("listingImage").value;
+      const image = getCroppedImage();
       const description = document.getElementById("listingDescription").value;
       const rate = parseFloat(document.getElementById("listingRate").value);
 
       if (!title || !image || !description || isNaN(rate) || rate <= 0) {
-        alert("Please fill out all fields correctly.");
+        alert("Please fill out all fields and choose a photo.");
         return;
       }
 
@@ -108,7 +216,12 @@
       };
 
       listings.push(newListing);
-      localStorage.setItem("userListings", JSON.stringify(listings));
+      try {
+        localStorage.setItem("userListings", JSON.stringify(listings));
+      } catch (err) {
+        alert("Not enough storage left in this browser. Delete an old listing or choose a smaller photo.");
+        return;
+      }
 
       alert("Listing created!");
       window.location.reload();
@@ -190,5 +303,6 @@
       });
     }
   </script>
+  <script src="register-sw.js"></script>
 </body>
 </html>

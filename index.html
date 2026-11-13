@@ -10,27 +10,217 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="rentables.css" />
+  <script>document.documentElement.classList.add("js");</script>
   <style>
-    html, body { height: 100%; }
-    body { display: flex; flex-direction: column; overflow: hidden; }
-    .hero { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #2b7a9b; }
-    /* Blurred copy fills any space the full image does not cover */
-    .hero::before, .hero::after {
-      content: ""; position: absolute; inset: 0;
-      background: url('background.png') center / cover no-repeat;
-    }
+    /* Hero */
+    .hero { position: relative; height: calc(100dvh - var(--nav-h)); min-height: 320px; overflow: hidden; background: #2b7a9b; }
+    .hero::before, .hero::after { content: ""; position: absolute; inset: 0; background: url('background.png') center / cover no-repeat; }
     .hero::before { filter: blur(24px); transform: scale(1.1); }
-    /* Full image, never cropped */
     .hero::after { background-size: contain; }
+
+    /* Shared section spacing */
+    .section { padding: clamp(72px, 12vw, 140px) clamp(16px, 4vw, 40px); }
+    .wrap { max-width: 1080px; margin: 0 auto; }
+
+    /* Statement: words fade in as you scroll */
+    .statement p { max-width: 22em; font-size: clamp(1.625rem, 4.6vw, 3.25rem); font-weight: 650; line-height: 1.2; letter-spacing: -0.025em; }
+    .js .statement .w { opacity: 0.2; }
+
+    /* Product walkthrough */
+    .showcase { padding: 0 clamp(16px, 4vw, 40px); }
+    .showcase-inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .phone-wrap { order: 2; position: sticky; top: var(--nav-h); height: calc(100dvh - var(--nav-h)); display: grid; place-items: center; }
+    .step { min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; max-width: 26em; transition: opacity 0.3s; }
+    .js .step { opacity: 0.3; }
+    .js .step.active { opacity: 1; }
+    .step h2 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); margin-bottom: 12px; }
+    .step p { color: var(--muted); font-size: 1.125rem; }
+
+    /* Phone mockup (sizes in em so it scales with font-size) */
+    .phone { width: 20em; font-size: 14px; aspect-ratio: 9 / 18.5; padding: 0.7em; background: var(--ink); border-radius: 3em; }
+    .phone-screen { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); border-radius: 2.4em; }
+    .screen { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 0.8em; padding: 2.4em 1.1em 1.1em; opacity: 0; transition: opacity 0.35s; }
+    .phone[data-active="1"] .screen-1, .phone[data-active="2"] .screen-2, .phone[data-active="3"] .screen-3 { opacity: 1; }
+    .m-brand { font-weight: 700; font-size: 1.1em; letter-spacing: -0.02em; }
+    .m-title { font-size: 1.25em; font-weight: 650; letter-spacing: -0.015em; }
+    .m-field { padding: 0.75em 0.9em; font-size: 0.85em; color: var(--muted); background: #fff; border: 1px solid var(--line-strong); border-radius: 0.5em; }
+    .m-field b { color: var(--ink); font-weight: 600; }
+    .m-card { overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 0.9em; }
+    .m-card img { width: 100%; height: 8em; object-fit: cover; }
+    .m-card div { padding: 0.7em 0.9em; font-size: 0.85em; }
+    .m-card strong { display: block; font-size: 1.05em; }
+    .m-card span { color: var(--muted); }
+    .m-btn { margin-top: auto; padding: 0.85em; font-size: 0.9em; font-weight: 600; text-align: center; color: #fff; background: var(--accent); border-radius: 0.5em; }
+
+    /* Features */
+    .features-head { margin-bottom: 48px; }
+    .features-head h2 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
+    .feature { padding-top: 16px; border-top: 1px solid var(--line-strong); }
+    .feature h3 { margin-bottom: 8px; font-size: 1.125rem; }
+    .feature p { color: var(--muted); }
+
+    /* Closing call to action */
+    .cta { text-align: center; color: #fff; background: var(--ink); }
+    .cta h2 { margin-bottom: 12px; font-size: clamp(1.75rem, 4vw, 2.75rem); }
+    .cta p { margin-bottom: 28px; color: #b6c2cb; }
+    .cta .row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .btn-light { background: #fff; color: var(--ink); }
+    .btn-light:hover { background: var(--accent-soft); }
+    .btn-outline-light { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+    .btn-outline-light:hover { background: rgba(255, 255, 255, 0.1); }
+    footer { padding: 24px clamp(16px, 4vw, 40px); font-size: 0.875rem; color: var(--muted); text-align: center; }
+
+    /* Scroll reveal */
+    .js .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s, transform 0.6s; }
+    .js .reveal.in { opacity: 1; transform: none; }
+
+    @media (max-width: 760px) {
+      .showcase-inner { grid-template-columns: 1fr; gap: 0; }
+      .phone-wrap { order: 0; height: auto; padding: 12px 0; background: var(--bg); z-index: 5; }
+      .phone { font-size: 9.5px; }
+      .step { min-height: 60dvh; justify-content: flex-start; padding-top: 24px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .js .statement .w, .js .step { opacity: 1; }
+      .js .reveal { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body>
   <header class="nav">
     <a class="brand" href="index.html"><img src="icon-192-v2.png" alt="" /><span>Rentables</span></a>
     <span class="nav-spacer"></span>
-    <a class="btn btn-ghost" href="sign_in2.html">Log in</a>
+    <a class="btn btn-gray" href="sign_in2.html">Log in</a>
     <a class="btn btn-primary" href="sign_up.html">Create account</a>
   </header>
-  <main class="hero" role="img" aria-label="Rent anything from anyone. Access thousands of items, safely and for sustainable living."></main>
+
+  <main>
+    <div class="hero" role="img" aria-label="Rent anything from anyone. Access thousands of items, safely and for sustainable living."></div>
+
+    <section class="section statement">
+      <div class="wrap">
+        <p id="statement">Rent what you need for as long as you need it. List what you do not use and let it earn for you.</p>
+      </div>
+    </section>
+
+    <section class="showcase" aria-label="How Rentables works">
+      <div class="showcase-inner">
+        <div class="phone-wrap" aria-hidden="true">
+          <div class="phone" id="phone" data-active="1">
+            <div class="phone-screen">
+              <div class="screen screen-1">
+                <div class="m-brand">Rentables</div>
+                <div class="m-field">Search listings</div>
+                <div class="m-card"><img src="https://www.colemansmusic.com.au/cdn/shop/products/VES57B-front.jpg?v=1646903616" alt="" loading="lazy" /><div><strong>Electric Guitar</strong><span>$15 per day</span></div></div>
+                <div class="m-card"><img src="https://media.printables.com/media/prints/935893/images/7153672_2cc8edc1-6bea-4bec-94db-869e38aee98c_9b57978c-5952-471f-b150-2ec7d51c17a1/thumbs/inside/1280x960/jpeg/img_0244.webp" alt="" loading="lazy" /><div><strong>Cube</strong><span>$5 per day</span></div></div>
+              </div>
+              <div class="screen screen-2">
+                <div class="m-brand">Rentables</div>
+                <div class="m-card"><img src="https://www.colemansmusic.com.au/cdn/shop/products/VES57B-front.jpg?v=1646903616" alt="" loading="lazy" /></div>
+                <div class="m-title">Electric Guitar</div>
+                <div class="m-field"><b>12 Dec</b> to <b>14 Dec</b></div>
+                <div class="m-field"><b>3 days selected, total $45</b></div>
+                <div class="m-btn">Rent now</div>
+              </div>
+              <div class="screen screen-3">
+                <div class="m-brand">Rentables</div>
+                <div class="m-title">New listing</div>
+                <div class="m-field">Title: <b>Camping tent</b></div>
+                <div class="m-field">Rate per day: <b>$12</b></div>
+                <div class="m-field" style="height:5em">Description</div>
+                <div class="m-btn">Save listing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="steps">
+          <article class="step" data-step="1">
+            <h2>Find it in seconds</h2>
+            <p>Browse everyday items and unusual ones, or search by name. Every listing shows its daily price up front.</p>
+          </article>
+          <article class="step" data-step="2">
+            <h2>Pick your dates</h2>
+            <p>Choose a start and end date and see the total before you confirm. The cost comes straight out of your balance.</p>
+          </article>
+          <article class="step" data-step="3">
+            <h2>List your own</h2>
+            <p>Have something sitting unused? Add a photo, set a daily rate and let other people rent it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="features-head reveal"><h2>Built for everyday use</h2></div>
+        <div class="features">
+          <div class="feature reveal"><h3>Clear daily pricing</h3><p>Each listing shows its price per day, so there are no surprises at checkout.</p></div>
+          <div class="feature reveal"><h3>Booking by date</h3><p>A calendar shows your total before you confirm.</p></div>
+          <div class="feature reveal"><h3>Install it</h3><p>Add Rentables to your phone or computer and open it like any other app.</p></div>
+          <div class="feature reveal"><h3>Works offline</h3><p>Pages you have already visited stay available without a connection.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta">
+      <div class="wrap reveal">
+        <h2>Start renting today</h2>
+        <p>Create an account in under a minute.</p>
+        <div class="row">
+          <a class="btn btn-light" href="sign_up.html">Create account</a>
+          <a class="btn btn-outline-light" href="sign_in2.html">Log in</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Rentables</footer>
+
+  <script>
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Statement: split into words, brighten them as they scroll into view
+    const statement = document.getElementById("statement");
+    statement.innerHTML = statement.textContent.trim().split(/\s+/).map(w => `<span class="w">${w}</span>`).join(" ");
+    const words = [...statement.querySelectorAll(".w")];
+    let ticking = false;
+    function paintWords() {
+      const vh = window.innerHeight;
+      words.forEach(w => {
+        const top = w.getBoundingClientRect().top;
+        const p = Math.min(1, Math.max(0, (vh * 0.85 - top) / (vh * 0.3)));
+        w.style.opacity = reduce ? 1 : 0.2 + 0.8 * p;
+      });
+      ticking = false;
+    }
+    window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(paintWords); } }, { passive: true });
+    window.addEventListener("resize", paintWords);
+    paintWords();
+
+    // Walkthrough: switch the phone screen to match the step in view
+    const phone = document.getElementById("phone");
+    const steps = document.querySelectorAll(".step");
+    const mobile = matchMedia("(max-width: 760px)").matches;
+    const stepObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          steps.forEach(s => s.classList.remove("active"));
+          e.target.classList.add("active");
+          phone.dataset.active = e.target.dataset.step;
+        }
+      });
+    }, { rootMargin: mobile ? "-65% 0px -20% 0px" : "-45% 0px -45% 0px" });
+    steps.forEach(s => stepObserver.observe(s));
+    steps[0].classList.add("active");
+
+    // Fade-in on scroll
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); revealObserver.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+  </script>
+  <script src="register-sw.js"></script>
 </body>
 </html>
